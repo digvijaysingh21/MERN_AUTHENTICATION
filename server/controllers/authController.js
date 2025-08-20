@@ -117,7 +117,7 @@ export const sendVerifyOtp = async (req,res) =>{
 
         const otp = String(Math.floor(100000 + Math.random() * 900000));
 
-        user.sendVerifyOtp = otp;
+        user.verifyOtp = otp;
         user.verifyOtpExpireAt = Date.now() + 24 * 60 * 60 * 1000
 
         await user.save();
@@ -144,7 +144,7 @@ export const sendVerifyOtp = async (req,res) =>{
 export const verifyEmail = async (req,res) =>{
     const {userId, otp} = req.body;
 
-    if(!userId || ! otp){
+    if(!userId || !otp){
         return res.json({success:false, message: 'Missing Details'})
     }
 
@@ -152,16 +152,19 @@ export const verifyEmail = async (req,res) =>{
         const user = await userModel.findById(userId);
 
         if(!user){
-            return res.jsom({success: false, message:'User not found'});
+            return res.json({success: false, message:'User not found'});
         }
 
         if(user.verifyOtp === '' || user.verifyOtp !== otp){
             return res.json({success:false, message:'Invalid OTP'})
 
         }
+    //      if (!user.verifyOtp || user.verifyOtp.toString() !== otp.toString()) {
+    //   return res.json({ success: false, message: "Invalid OTP" });
+    // }
 
         if(user.verifyOtpExpireAt < Date.now()){
-            return res.jsno({success: false, message:'OTP expired'})
+            return res.json({success: false, message:'OTP expired'})
         }
 
         user.isAccountVerified = true;
