@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
+import transporter from "../config/nodemailer.js";
 
 export const register = async (req,res) =>{
 
@@ -30,6 +31,15 @@ export const register = async (req,res) =>{
             sameSite: process.env.Node_Env === 'production' ? 'none' : 'strict',
             maxAge: 7 * 24 * 60 * 60 * 1000  //in milliseconds
         })
+        //sending welcome email
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: email,
+            subject: 'Welocme to mern_auth',
+            text: `Welcome to mern_auth website. Your account has been created with email id: ${email}`
+        }
+        await transporter.sendMail(mailOptions)
+
         return res.json({success:true});
 
     }catch(error){
