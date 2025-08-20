@@ -52,7 +52,7 @@ export const login = async (req,res) =>{
             return res.json({success:false,messaeg:'Invalid email'})
         }
 
-        const isMatch = await bcrypt.compare(password, user.passowrd);
+        const isMatch = await bcrypt.compare(password, user.password);
 
         if(!isMatch){
             return res.json({success:false,messaeg:'Invalid password'})
@@ -79,7 +79,7 @@ export const login = async (req,res) =>{
 export const logout = async (req,res) =>{
 
     try{
-        res.clearCookie('token', token,{
+        res.clearCookie('token',{
             httpOnly: true,
             secure: process.env.Node_Env === 'production',
             sameSite: process.env.Node_Env === 'production' ? 'none' : 'strict',
