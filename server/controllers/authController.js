@@ -17,7 +17,7 @@ export const register = async (requestAnimationFrame,res) =>{
             return res.json({success:false, message: "User already exists"});
         }
 
-        const hashedPassword = awiat bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = new userModel({name, email, password: hashedPassword});
         await user.save();
