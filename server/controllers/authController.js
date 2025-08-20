@@ -30,9 +30,47 @@ export const register = async (requestAnimationFrame,res) =>{
             sameSite: process.env.Node_Env === 'production' ? 'none' : 'strict',
             maxAge: 7 * 24 * 60 * 60 * 1000  //in milliseconds
         })
+        return res.json({success:true});
 
     }catch(error){
         res.json({success: false, message:error.message})
     }
 }
 
+
+export const login = async (req,res) =>{
+    const {email, password} = req.body;
+
+    if(!email || !password){
+        return res.json({success:false, message: 'Email and Password are required'})
+    }
+
+    try{
+        const user = await userModel.findOne({email})
+
+        if(!user){
+            return res.json({success:false,messaeg:'Invalid email'})
+        }
+
+        const isMatch = await bcrypt.compare(password, user.passowrd);
+
+        if(!isMatch){
+            return res.json({success:false,messaeg:'Invalid password'})
+        }
+
+        const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '7d'})
+
+        res.cookie('token', token,{
+            httpOnly: true,
+            secure: process.env.Node_Env === 'production',
+            sameSite: process.env.Node_Env === 'production' ? 'none' : 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000  //in milliseconds
+
+        })
+
+        return res.json({success:true});
+
+    }catch(error){
+        return res.json({success:false, message: error.message})
+    }
+}
