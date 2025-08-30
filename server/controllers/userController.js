@@ -3,7 +3,11 @@ import userModel from "../models/userModel.js";
 export const getUserData = async(req,res) =>{
 
     try{
-        const {userId} = req.body;
+        const { userId } = req.body;
+
+         if (!userId) {
+      return res.json({ success: false, message: "userId is required" });
+    }
 
         const user = await userModel.findById(userId);
 
@@ -15,12 +19,13 @@ export const getUserData = async(req,res) =>{
             success: true,
             userdata: {
                 name: user.name,
-                isAccountVerified: user.isAccountVerified
+                isAccountVerified: user.isAccountVerified,
 
             }
         });
-        
+
     }catch(error){
-        return res.json({success:true, message: error.message})
+        return res.json({success:false, message: error.message})
     }
 }
+
