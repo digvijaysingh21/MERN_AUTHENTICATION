@@ -140,7 +140,7 @@ export const sendVerifyOtp = async (req,res) =>{
 }
 
 
-//verify email
+//verify email usin otp
 export const verifyEmail = async (req,res) =>{
     const {userId, otp} = req.body;
 
@@ -178,5 +178,16 @@ export const verifyEmail = async (req,res) =>{
 
     }catch(error){
         return res.json({success: false, message: error.message})
+    }
+}
+
+
+//check if user is authenticated
+export const isAuthenticated = async (req,res) =>{
+
+    try{
+        res.json({success: true})
+    }catch(error){
+        res.json({success:false, message: error.message})
     }
 }
